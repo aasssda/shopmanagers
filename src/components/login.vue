@@ -35,32 +35,51 @@ export default {
   },
   methods: {
     // 登录请求
-    handlelogin () {
-      this.$http
-        .post(`login`, this.formdata)
-        .then(res => {
-          console.log(res)
-          const {
-            data: {
-              data,
-              meta: { msg, status }
-            }
-          } = res
-          if (status === 200) {
-            console.log('login---success----')
-          } else {
-            console.log('error----')
-          }
+    async handlelogin () {
+      const res = await this.$http.post(`login`, this.formdata)
+      // console.log(res)
+      const {
+        data: {
+          data: {token},
+          meta: { msg, status }
+        }
+      } = res
 
-          // eg
-          // const {per} = {per:"abc"}
-          // console.log(per)
-          // const {name:newname} = {name:'abc'}
-          // console.log(newname);
+      if (status === 200) {
+        localStorage.setItem('token', token)
+        this.$router.push({
+          name: 'home'
         })
-        .catch(err => {
-          console.log(err)
-        })
+      } else {
+        // 用户名、密码错误
+        this.$message.error(msg)
+      }
+      // .then(res => {
+      //   console.log(res)
+      //   const {
+      //     data: {
+      //       data,
+      //       meta: { msg, status }
+      //     }
+      //   } = res
+      // if (status === 200) {
+      //   this.$router.push({
+      //     name: 'home'
+      //   })
+      // } else {
+      //   // 用户名、密码错误
+      //    this.$message.error(msg)
+      // }
+
+      // eg
+      // const {per} = {per:"abc"}
+      // console.log(per)
+      // const {name:newname} = {name:'abc'}
+      // console.log(newname);
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
     }
   }
 }
