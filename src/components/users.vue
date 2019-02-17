@@ -73,6 +73,7 @@
       >
         <template slot-scope="scope">
           <el-switch
+          @change="changeState(scope.row)"
             v-model="scope.row.mg_state"
             active-color="#13ce66"
             inactive-color="#ff4949"
@@ -102,8 +103,9 @@
             plain
           ></el-button>
           <el-button
+          @click="showDiaSetRole(scope.row)"
             type="success"
-            icon="el-icon-message"
+            icon="el-icon-check"
             circle
             size="mini"
             plain
@@ -187,6 +189,25 @@
         >确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 对话框 角色 -->
+    <el-dialog title="分配角色" :visible.sync="dialogFormVisibleRole">
+  <el-form :model="formdata" label-position="left" label-width="80px">
+    <el-form-item label="用户名">
+      {{formdata.username}}
+    </el-form-item>
+    <el-form-item label="角色">
+      {{selectVal}}
+      <el-select v-model="selectVal" placeholder="请选择角色名称">
+        <el-option label="请选择" value="shanghai"></el-option>
+        <!-- 其余6个动态生成 -->
+      </el-select>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
+        <el-button type="primary" @click="setRole()">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -211,33 +232,51 @@ export default {
         password: '',
         email: '',
         mobile: ''
-      }
+      },
+      // 下拉框使用的数据
+      selectVal: 1
     }
   },
   created () {
     this.getTableData()
   },
   methods: {
+    // 分配角色显示对话框
+    showDiaSetRole (user) {
+      this.showDiaSetRole = true
+    },
+    // 修改用户状太
+    async changeState (user) {
+      const res = await this.$http.put(`users/${user.id}/statu/${user.mg_state}`)
+      console.log(res)
+      const {
+        meta: { msg, status }
+      } = res.data
+      if (status === 200) {
+        // 关闭对话框
+        this.$message.success(msg)
+      }
+    },
     // 编辑-发送请求
     async editUser () {
       // 发送请求
       const res = await this.$http.put(`users/${this.formdata.id}`, this.formdata)
       console.log(res)
-       const {
-            meta: { msg, status }
-          } = res.data
-          if (status === 200) {
-          // 关闭对话框
-            this.dialogFormVisibleEdit = false
-            // 更新表格
-            // this.pegenum = 1
-            this.getTableData()
-          }
+      const {
+        meta: { msg, status }
+      } = res.data
+      if (status === 200) {
+        // 关闭对话框
+        this.dialogFormVisibleEdit = false
+        // 更新表格
+        // this.pegenum = 1
+        this.getTableData()
+      }
     },
     // 编辑-显示对话框
     showDiaEditUser (user) {
-      this.formdata=user
-this.dialogFormVisibleEdit = true
+      this.formdata = user
+      this.dialogFormVisibleEdit = true
     },
     // 删除-确认弹出框
     showMsgBox (user) {
