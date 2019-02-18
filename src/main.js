@@ -7,13 +7,12 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/base.css'
 import router from './router'
-import axios from 'axios'
 import moment from 'moment'
-axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
-Vue.prototype.$http = axios
+import HttpServer from './components/http'
 // ElementUI其实Vue插件，和VueRouter用法一样 vue.use(名)
 // vue插件的使用
 Vue.use(ElementUI)
+Vue.use(HttpServer)
 Vue.config.productionTip = false
 
 // 全局过滤器处理日期
@@ -21,7 +20,7 @@ Vue.filter('fmtdate', (v) => {
   return moment(v).format('YYYY-MM-DD')
 })
 // 全局自定义组件
-Vue.component(CusBread.namer, CusBread)
+Vue.component(CusBread.name, CusBread)
 /* eslint-disable no-new */
 
 new Vue({

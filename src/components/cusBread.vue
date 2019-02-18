@@ -4,17 +4,17 @@
       <el-breadcrumb-item>{{level1}}</el-breadcrumb-item>
       <el-breadcrumb-item>{{level2}}</el-breadcrumb-item>
     </el-breadcrumb>
-   
+
 </template>
 <script>
 export default {
-    name:"cusBread",
-    data(){
-        return{
-            
-        }
-    },
-    props:["level1","level2"]
+  name: 'cusBread',
+  data () {
+    return {
+
+    }
+  },
+  props: ['level1', 'level2']
 
 }
 </script>

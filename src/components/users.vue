@@ -219,7 +219,7 @@
              <el-option
               :label="item.roleName"
               :value="item.id"
-              v-for="(item,i) in roles"
+              v-for="item in roles"
               :key="item.id"
             ></el-option>
           </el-select>
@@ -281,8 +281,7 @@ export default {
         rid: this.selectVal
       })
       const {
-        meta: { msg, status },
-        data
+        meta: { msg, status }
       } = res.data
       if (status === 200) {
         // 关闭对话框
@@ -299,7 +298,7 @@ export default {
       const res = await this.$http.get(`roles`)
       // console.log(res);
       const {
-        meta: { msg, status },
+        meta: {status},
         data
       } = res.data
       if (status === 200) {
@@ -338,7 +337,7 @@ export default {
       )
       console.log(res)
       const {
-        meta: { msg, status }
+        meta: {status}
       } = res.data
       if (status === 200) {
         // 关闭对话框
@@ -431,7 +430,7 @@ export default {
       console.log(res)
       const {
         data,
-        meta: { status, msg }
+        meta: { status }
       } = res.data
       if (status === 200) {
         this.total = data.total
