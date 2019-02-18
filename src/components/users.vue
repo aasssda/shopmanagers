@@ -266,8 +266,8 @@ export default {
       selectVal: -1,
       // 保存角色数据
       roles: [],
-      currUsername:"",
-      currUserId:-1
+      currUsername: '',
+      currUserId: -1
     }
   },
   created () {
@@ -275,12 +275,12 @@ export default {
   },
   methods: {
     // 分配角色，发送请求
-     async setRole(){
+    async setRole () {
       // 发送请求
-       const res = await this.$http.put(`users/${this.currUserId}/role`,{
-         rid:this.selectVal
-       })
-       const {
+      const res = await this.$http.put(`users/${this.currUserId}/role`, {
+        rid: this.selectVal
+      })
+      const {
         meta: { msg, status },
         data
       } = res.data
@@ -289,7 +289,6 @@ export default {
         this.dialogFormVisibleRole = false
         this.$message.success(msg)
       }
-      
     },
     // 分配角色显示对话框
     async showDiaSetRole (user) {
@@ -311,8 +310,8 @@ export default {
       console.log(res2)
       // const {meta: { msg2, status2 },data2} = res2.data
       // if (status === 200) {
-        // 所有角色都有自己的id
-       this.selectVal= res2.data.data.rid
+      // 所有角色都有自己的id
+      this.selectVal = res2.data.data.rid
       // }
     },
 
