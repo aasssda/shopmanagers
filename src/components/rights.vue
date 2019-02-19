@@ -59,7 +59,7 @@ export default {
     //   const AUTH_TOKEY = localStorage.getItem('token')
     //   this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEY
       const res = await this.$http.get(`rights/list`)
-      console.log(res)
+      // console.log(res)
       const {
         meta: { status },
         data
