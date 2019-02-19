@@ -14,7 +14,7 @@
             <!-- 行列 -->
             <el-row class="level1" v-for="item1 in scope.row.children" :key="item1.id">
                 <el-col :span="4">
-                    <el-tag closable type="danger">
+                    <el-tag @close="deleRights(scope.row,item1)" closable type="danger">
                         {{item1.authName}}
                     </el-tag>
                     <i class="el-icon-caret-right"></i>
@@ -22,19 +22,24 @@
                  <el-col :span="20">
                      <el-row class="level2" v-for="item2 in item1.children" :key="item2.id">
                          <el-col :span="4">
-                             <el-tag closable type="info">
+                             <el-tag @close="deleRights(scope.row,item2)" closable type="info">
                         {{item2.authName}}
                     </el-tag>
                     <i class="el-icon-caret-right"></i>
                          </el-col>
                          <el-col :span="20">
-                              <el-tag closable v-for="item3 in item2.children" :key="item3.id" type="warning">
+                              <el-tag @close="deleRights(scope.row,item3)" closable v-for="item3 in item2.children" :key="item3.id" type="warning">
                         {{item3.authName}}
                     </el-tag>
                     <i class="el-icon-caret-right"></i>
                          </el-col>
                      </el-row>
                  </el-col>
+            </el-row>
+            <el-row v-if="scope.row.children.length===0">
+                <el-col>
+                   <span>未分配权限</span> 
+                </el-col>
             </el-row>
               </template>
           </el-table-column>
@@ -99,7 +104,21 @@ export default {
     this.getRoles()
   },
   methods: {
-
+        // 取消权限
+        async deleRights(role,rights){
+// 
+const res = await this.$http.delete(`roles/${role.id}/rights/${rights.id}`)
+const {meta:{msg,status},data} = res.data
+if (status===200) {
+// 提示哦
+this.$message.success(msg)
+// 更新
+// this.getRoles()
+// 只更新当前角色权限
+role.children = data
+}
+        },
+      showDiaSetRights() {},
     async getRoles () {
       const res = await this.$http.get(`roles`)
       console.log(res)
