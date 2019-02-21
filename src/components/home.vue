@@ -37,18 +37,22 @@
           :unique-opened="true"
         >
           <!--1 用户管理 -->
-          <el-submenu index="1">
+          <el-submenu
+    :index="item1.order+''"
+    v-for="(item1,i) in menus"
+    :key="item1.id"
+  >
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{item1.authName}}</span>
             </template>
-            <el-menu-item index="users">
+            <el-menu-item :index="item2.path+''" v-for="(item2,i) in item1.children" :key="item2.id">
               <i class="el-icon-menu"></i>
-              用户列表
+              {{item2.authName}}
             </el-menu-item>
           </el-submenu>
           <!-- 2权限管理 -->
-          <el-submenu index="2">
+          <!-- <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>权限管理</span>
@@ -61,9 +65,9 @@
               <i class="el-icon-menu"></i>
               权限列表
             </el-menu-item>
-          </el-submenu>
+          </el-submenu> -->
           <!-- 3商品管理 -->
-          <el-submenu index="3">
+          <!-- <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>商品管理</span>
@@ -80,9 +84,9 @@
               <i class="el-icon-menu"></i>
               商品分类
             </el-menu-item>
-          </el-submenu>
+          </el-submenu> -->
           <!-- 4.订单管理 -->
-          <el-submenu index="4">
+          <!-- <el-submenu index="4">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>订单管理</span>
@@ -91,9 +95,9 @@
               <i class="el-icon-menu"></i>
               订单列表
             </el-menu-item>
-          </el-submenu>
+          </el-submenu> -->
           <!-- 5数据统计 -->
-          <el-submenu index="5">
+          <!-- <el-submenu index="5">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>数据统计</span>
@@ -102,7 +106,7 @@
               <i class="el-icon-menu"></i>
               数据报表
             </el-menu-item>
-          </el-submenu>
+          </el-submenu> -->
         </el-menu>
       </el-aside>
       <el-main class="main">
@@ -115,15 +119,36 @@
 
 <script>
 export default {
-  beforMount () {
-    if (!localStorage.getItem('token')) {
-      this.$router.push({
-        name: 'login'
-      })
+  data () {
+    return {
+      menus: []
     }
   },
+  // beforMount () {
+  //   if (!localStorage.getItem('token')) {
+  //     this.$router.push({
+  //       name: 'login'
+  //     })
+  //   }
+  // },
+  created () {
+    this.getMenus()
+  },
   methods: {
-  // 退出
+    async getMenus () {
+      // 角色为超管->超管的token->请求菜单
+      // admin登录->主管->所有权限->主管的token->
+      const res = await this.$http.get(`menus`)
+      const {
+        meta: { msg, status },
+        data
+      } = res.data
+      if (status === 200) {
+        this.menus = data
+        // console.log(this.menus);
+      }
+    },
+    // 退出
     handleLoginout () {
       // 1.清除token
       localStorage.clear()
@@ -131,6 +156,7 @@ export default {
       this.$router.push({
         name: 'login'
       })
+      // 提示
       this.$message.warning('退出成功')
     }
   }
