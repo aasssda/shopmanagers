@@ -83,11 +83,34 @@
         <el-tab-pane
           label="商品属性"
           name="3"
-        >商品属性</el-tab-pane>
+        >
+         <el-form-item
+            :label="item.attr_name"
+            v-for="(item,i) in arrStatic"
+            :key="item.attr_id"
+          >
+            <el-input v-model="item.attr_vals"></el-input>
+          </el-form-item>
+        </el-tab-pane>
         <el-tab-pane
           label="商品图片"
           name="4"
-        >商品图片</el-tab-pane>
+        >
+        <el-form-item
+            label="添加图片"
+          >
+          <!-- headers可以设置请求头 -->
+        <el-upload
+        :headers="headers"
+  action="http://localhost:8888/api/private/v1/upload"
+  :on-success="handleSuccess"
+  :on-remove="handleRemove"
+ 
+  list-type="picture">
+  <el-button size="small" type="primary">点击上传</el-button>
+</el-upload>
+</el-form-item>
+        </el-tab-pane>
         <el-tab-pane
           label="商品内容"
           name="5"
@@ -98,6 +121,9 @@
 </template>
 <script>
 export default {
+  created(){
+    var a = localStorage.getItem("token")
+  },
   data () {
     return {
       active: '1',
@@ -134,6 +160,14 @@ export default {
     this.getGoodsCate()
   },
   methods: {
+    // 假上传成功
+    handleSuccess(response, file, fileList){
+
+    },
+    // 移除x
+    handleRemove(file, fileList){
+
+    },
     // 点击任何tab触发
    async changeTab () {
       // 如果点击第二个
