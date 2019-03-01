@@ -105,7 +105,7 @@
   action="http://localhost:8888/api/private/v1/upload"
   :on-success="handleSuccess"
   :on-remove="handleRemove"
- 
+
   list-type="picture">
   <el-button size="small" type="primary">点击上传</el-button>
 </el-upload>
@@ -114,15 +114,25 @@
         <el-tab-pane
           label="商品内容"
           name="5"
-        >商品内容</el-tab-pane>
+        >
+          <el-form-item>
+            <el-button @click="addGoods()">添加商品</el-button>
+           <quill-editor v-model="form.goods_introduce" class="quill"></quill-editor>
+           </el-form-item>
+        </el-tab-pane>
       </el-tabs>
     </el-form>
   </el-card>
 </template>
 <script>
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+import { quillEditor } from 'vue-quill-editor'
 export default {
-  created(){
-    var a = localStorage.getItem("token")
+  components: {
+    quillEditor: quillEditor
   },
   data () {
     return {
@@ -160,16 +170,63 @@ export default {
     this.getGoodsCate()
   },
   methods: {
-    // 假上传成功
-    handleSuccess(response, file, fileList){
+    async addGoods () {
+      this.form.goods_cat = this.selectedOptions.join(',')
+      const arr1 = this.arrDy.map(item => {
+        return {
+          attr_id: item.attr_id, attr_value: item.attr_vals
+        }
+      })
+      const arr2 = this.arrStatic.map(item => {
+        return {
+          attr_id: item.attr_id, attr_value: item.attr_vals
+        }
+      })
 
+      // 处理动态
+      // const obj1 = { attr_id: "", attr_value:""}
+      // const arr1 = [];
+      // this.arrDy.forEach(item => {
+      //   obj1.attr_id = item.attr_id
+      //   obj1.attr_value = item.attr_vals
+      //   arr1.push(obj1)
+      // })
+      // 处里静态
+      // const obj2 = { attr_id: "", attr_value:""}
+      // const arr2 = []
+      // this.arrStatic.forEach(item => {
+      //   obj2.attr_id = item.attr_id
+      //   obj2.attr_value = item.attr_vals
+      //   arr2.push(obj2)
+      // })
+      this.form.attrs = [...arr1, ...arr2]
+      // 发送请求
+      const res = await this.$http.post(`goods`, this.form)
+      const {meta: {msg, status}} = res.data
+      if (status === 201) {
+        //  列表
+        this.$router.push({
+          name: 'goods'
+        })
+      } else {
+        this.$message.error(msg)
+      }
+    },
+    // 假上传成功
+    handleSuccess (response, file, fileList) {
+      this.form.pics.push({
+        pic: res.data.tmp_path
+      })
     },
     // 移除x
-    handleRemove(file, fileList){
-
+    handleRemove (file, fileList) {
+      const Index = this.form.pics.map((item) => {
+        return item.pic === file.response.data.tmp_path
+      })
+      this.form.pics.splice(Index, 1)
     },
     // 点击任何tab触发
-   async changeTab () {
+    async changeTab () {
       // 如果点击第二个
       // 如果分类是三级
       if (this.active === '2' || this.active === '3') {
@@ -203,7 +260,7 @@ export default {
                 item.attr_vals.trim().length === 0
                   ? []
                   : item.attr_vals.trim().split(',')
-            }); 
+            })
             // console.log(this.arrDy);
             //
             // this.flag = false;
@@ -254,5 +311,8 @@ alert {
 .form {
   height: 400px;
   overflow: auto;
+}
+.ql-editor,.ql-blank{
+  min-height: 200px;
 }
 </style>

@@ -21,6 +21,7 @@ Vue.filter('fmtdate', (v) => {
 })
 // 全局自定义组件
 Vue.component(CusBread.name, CusBread)
+// Vue.component(ElTreeGrid.name, ElTreeGrid)
 /* eslint-disable no-new */
 
 new Vue({
